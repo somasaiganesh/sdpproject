@@ -61,6 +61,7 @@
             <a class="has-arrow" href="javascript:void(0);" aria-expanded="false">
                 <i class="fa fa-sign-in"></i> <span class="nav-text">Login</span>
             </a>
+            
             <ul aria-expanded="false">
                 <li><a href="teacherlogin.jsp">Teacher Login</a></li>
                 <li><a href="studentlogin.jsp">Student Login</a></li>
@@ -69,6 +70,7 @@
         <a href="studentregister">Student Registration</a>
         <a href="about.jsp">About Us</a>
         <a href="contact.jsp">Contact</a>
+        <a href="faqs.jsp">FAQs</a>
     </div>
 
     <!-- Main Content -->

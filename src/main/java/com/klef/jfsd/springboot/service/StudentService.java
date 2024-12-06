@@ -1,5 +1,7 @@
 package com.klef.jfsd.springboot.service;
 
+import java.util.List;
+
 import com.klef.jfsd.springboot.model.Student;
 
 public interface StudentService
@@ -15,7 +17,8 @@ public interface StudentService
 public Student getStudentByEmail(String email);
 public void updateStudent(Student student);
 public Student getStudentWithReports(int sid);
-public Object getAllStudents();
+public List<Student> getAllStudents();
 public Student getStudentById(Long studentId);
+Student getStudentById(int id);
   
 }

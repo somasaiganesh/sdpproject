@@ -112,13 +112,19 @@ public class StudentServiceImpl implements StudentService {
 			return null;
 		}
 
-		 public List<Student> getAllStudents() {
+		 @Override
+		    public List<Student> getAllStudents() {
 		        return studentRepository.findAll();
 		    }
 
-		    // Get a student by ID
-		    public Student getStudentById(Long id) {
-		        return studentRepository.findById(id).orElse(null);
+		    @Override
+		    public Student getStudentById(int id) {
+		        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
 		    }
+		    @Override
+		    public Student getStudentById(Long studentId) {
+		        return studentRepository.findById(studentId).orElse(null);
+		    }
+
 
 }

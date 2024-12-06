@@ -10,7 +10,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZHPcYQrzE26g_WF7OsxwTUMZs_t25XWIWQg&s) no-repeat center center fixed;
+            background-size: cover;
             margin: 0;
             padding: 0;
         }

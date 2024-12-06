@@ -72,7 +72,7 @@
         <a href="studenthome">Dashboard</a>
         <a href="viewstudentreports">View Reports</a>
 
-        <a href="viewgrades">View Grades</a>
+        <a href="viewmarks">View Marks</a>
         <a href="viewrecommendations">View Recommendations</a>
         <a href="studentprofile">Student Profile</a>
         <a href="updateprofile">Update Profile</a>
