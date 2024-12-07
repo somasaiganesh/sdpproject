@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.klef.jfsd.springboot.model.Recommendations;
 import com.klef.jfsd.springboot.model.Student;
+import com.klef.jfsd.springboot.repository.RecommendationsRepository;
 import com.klef.jfsd.springboot.repository.StudentRepository;
 
 @Service
@@ -14,6 +16,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	private StudentRepository studentRepository;
+	
+	@Autowired
+	private RecommendationsRepository recommendationsRepository;
 
 	public String addStudent(Student student) {
         // Validate the student object here if needed (e.g., check if contact, email are valid)
@@ -143,6 +148,11 @@ public class StudentServiceImpl implements StudentService {
 				// TODO Auto-generated method stub
 				return null;
 			}
+			 
+			    @Override
+			    public List<Recommendations> getRecommendationsByStudent(Student student) {
+			        return recommendationsRepository.findByStudent(student);
+			    }
 
 
 }

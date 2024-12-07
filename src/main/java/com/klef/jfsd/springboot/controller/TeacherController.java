@@ -346,7 +346,7 @@ public class TeacherController {
 		        // Create new Recommendation object
 		        Recommendations recommendation = new Recommendations();
 		        recommendation.setStudent(student);
-		        recommendation.setCourse(courseTitle);
+		        recommendation.setCourseTitle(courseTitle);
 		        recommendation.setRecommendationText(recommendationText);
 
 		        // Save the recommendation

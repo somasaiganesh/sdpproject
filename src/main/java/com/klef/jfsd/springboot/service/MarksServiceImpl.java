@@ -32,6 +32,8 @@ public class MarksServiceImpl implements MarksService{
 		    return marksRepository.findByStudentId(studentId);
 		}
 
+		
+
 
 
 }

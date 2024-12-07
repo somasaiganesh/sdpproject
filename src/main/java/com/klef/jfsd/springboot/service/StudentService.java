@@ -2,6 +2,7 @@ package com.klef.jfsd.springboot.service;
 
 import java.util.List;
 
+import com.klef.jfsd.springboot.model.Recommendations;
 import com.klef.jfsd.springboot.model.Student;
 
 public interface StudentService
@@ -22,5 +23,6 @@ public Student getStudentById(Object object);
 Student getStudentById(int id);
 public Student findStudentById(int id);
 Student getStudentById(Long studentId);
+public List<Recommendations> getRecommendationsByStudent(Student student);
   
 }

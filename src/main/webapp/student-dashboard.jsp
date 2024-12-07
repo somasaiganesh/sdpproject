@@ -93,7 +93,8 @@
     <div class="sidebar">
         <a href="studenthome">Dashboard</a>
         <a href="viewstudentreports">View Reports</a>
-        <a href="/viewmarks"value="${student.id}">View Marks</a>
+        <a href="/student/${student.id}/marks">View Marks</a>
+
 
         <a href="viewrecommendations">View Recommendations</a>
         <a href="studentProfile">Student Profile</a>

@@ -11,5 +11,6 @@ public interface RecommendationsService {
 	Recommendations saveRecommendation(Recommendations recommendation);
 
 	List<Recommendations> getRecommendationsByStudent(Student student);
+	
 
 }

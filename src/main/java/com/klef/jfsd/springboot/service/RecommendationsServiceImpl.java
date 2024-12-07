@@ -18,6 +18,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	    public Recommendations saveRecommendation(Recommendations recommendation) {
 	        return recommendationsRepository.save(recommendation);
 	    }
+	    @Override
 	    public List<Recommendations> getRecommendationsByStudent(Student student) {
 	        return recommendationsRepository.findByStudent(student);
 	    }

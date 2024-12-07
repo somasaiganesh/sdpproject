@@ -48,11 +48,11 @@ public class Recommendations {
         this.student = student;
     }
 
-    public String getCourse() {
+    public String getCourseTitle() {
         return coursetitle;
     }
 
-    public void setCourse(String coursetitle) {
+    public void setCourseTitle(String coursetitle) {
         this.coursetitle = coursetitle;
     }
 

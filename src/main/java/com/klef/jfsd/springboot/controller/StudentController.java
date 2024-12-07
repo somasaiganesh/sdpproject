@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.klef.jfsd.springboot.model.Marks;
+import com.klef.jfsd.springboot.model.Recommendations;
 import com.klef.jfsd.springboot.model.Student;
+import com.klef.jfsd.springboot.service.MarksService;
 import com.klef.jfsd.springboot.service.StudentService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +25,8 @@ public class StudentController {
   
   @Autowired
   private StudentService studentService;
+  @Autowired
+  private MarksService marksService;
   
   // Display student dashboard with dynamic name
   @GetMapping("/studenthome")
@@ -182,5 +188,40 @@ public class StudentController {
       } else {
           return new ModelAndView("errorPage").addObject("errorMessage", "Student not found.");
       }
+  }
+  @GetMapping("/viewrecommendations")
+  public ModelAndView viewRecommendations(HttpSession session) {
+      Integer studentId = (Integer) session.getAttribute("studentId");
+
+      if (studentId == null) {
+          return new ModelAndView("studentlogin").addObject("message", "Session expired. Please log in again.");
+      }
+
+      // Fetch student data
+      Student student = studentService.findStudentById(studentId);
+      if (student == null) {
+          return new ModelAndView("errorPage").addObject("errorMessage", "Student not found.");
+      }
+
+      // Fetch recommendations from the database
+      List<Recommendations> recommendations = studentService.getRecommendationsByStudent(student);
+
+      // Pass data to the view
+      ModelAndView mv = new ModelAndView("viewrecommendations");
+      mv.addObject("student", student);
+      mv.addObject("recommendations", recommendations);
+      return mv;
+  }
+  @GetMapping("/student/{studentId}/marks")
+  public ModelAndView viewMarks(@PathVariable int studentId) {
+      // Fetch all marks for the student from the service
+      List<Marks> marksList = marksService.getMarksByStudentId(studentId);
+
+      // Create ModelAndView object and set the model and view name
+      ModelAndView modelAndView = new ModelAndView();
+      modelAndView.setViewName("viewmarks"); // The name of the JSP file
+      modelAndView.addObject("marksList", marksList); // Add marks data to the model
+
+      return modelAndView;
   }
 }

@@ -12,7 +12,7 @@ import com.klef.jfsd.springboot.model.Recommendations;
 import com.klef.jfsd.springboot.model.Student;
 
 @Repository
-public interface RecommendationsRepository extends JpaRepository<Recommendations, Integer>{
+public interface RecommendationsRepository extends JpaRepository<Recommendations, Long>{
 	  List<Recommendations> findByStudent(Student student);
 
 }

@@ -14,4 +14,6 @@ public interface MarksService {
 
 	public List<Marks> getMarksByStudentId(int studentId);
 
+	
+
 }
