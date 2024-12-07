@@ -14,6 +14,7 @@ import com.klef.jfsd.springboot.model.Student;
 import com.klef.jfsd.springboot.service.StudentService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class StudentController {
@@ -21,140 +22,165 @@ public class StudentController {
   @Autowired
   private StudentService studentService;
   
+  // Display student dashboard with dynamic name
   @GetMapping("/studenthome")
-  public ModelAndView studentHome() {
-    ModelAndView mv = new ModelAndView("student-dashboard");
-    return mv;
+  public ModelAndView studentHome(HttpSession session) {
+      ModelAndView mv = new ModelAndView("student-dashboard");
+
+      // Retrieve the logged-in student's information from the session
+      Integer studentId = (Integer) session.getAttribute("studentId");
+      if (studentId == null) {
+          mv.setViewName("studentlogin");
+          mv.addObject("message", "Session expired. Please log in again.");
+          return mv;
+      }
+
+      Student student = studentService.findStudentById(studentId);
+      if (student != null) {
+          mv.addObject("student", student);
+      } else {
+          mv.setViewName("errorPage");
+          mv.addObject("errorMessage", "Student not found.");
+      }
+
+      return mv;
   }
+
   @GetMapping("/studentregister")
   public String showStudentRegisterPage() {
-      return "student-registration-form"; // The JSP file name (without .jsp)
+      return "student-registration-form";
   }
 
- 
- @PostMapping("insertstudent")
-  public ModelAndView insertstudent(HttpServletRequest request)
-  {
-   String name = request.getParameter("sname");
-   String gender = request.getParameter("sgender");
-   String dob = request.getParameter("sdob");
-   String email = request.getParameter("semail");
-   String password = request.getParameter("spwd");
-   String contact = request.getParameter("scontact");
-   String status = "Registered";
-   String gradeLevel = request.getParameter("sgradelevel");
-   
-     Student student = new Student();
-     student.setName(name);
-     student.setGender(gender);
-     student.setDateOfBirth(dob);
-     student.setEmail(email);
-     student.setPassword(password);
-     student.setContact(contact);
-     student.setStatus(status);
-     student.setGradeLevel(gradeLevel);
-     String msg = studentService.studentRegistraion(student);
-     if (gradeLevel == null || gradeLevel.isEmpty()) {
-         gradeLevel = "Grade 1"; // Default value
-     }
-     student.setGradeLevel(gradeLevel);
+  @PostMapping("/insertstudent")
+  public ModelAndView insertStudent(HttpServletRequest request) {
+      // Retrieve form inputs
+      String name = request.getParameter("sname");
+      String gender = request.getParameter("sgender");
+      String dob = request.getParameter("sdob");
+      String email = request.getParameter("semail");
+      String password = request.getParameter("spwd");
+      String contact = request.getParameter("scontact");
+      String gradeLevel = request.getParameter("sgradelevel");
+      if (gradeLevel == null || gradeLevel.isEmpty()) {
+          gradeLevel = "Grade 1"; // Default value
+      }
 
+      // Create and populate student object
+      Student student = new Student();
+      student.setName(name);
+      student.setGender(gender);
+      student.setDateOfBirth(dob);
+      student.setEmail(email);
+      student.setPassword(password);
+      student.setContact(contact);
+      student.setStatus("Registered");
+      student.setGradeLevel(gradeLevel);
 
-     ModelAndView mv = new ModelAndView("studentlogin");
-     mv.addObject("message", msg);
-   
-     return mv;
+      String msg = studentService.studentRegistraion(student);
 
+      ModelAndView mv = new ModelAndView("studentlogin");
+      mv.addObject("message", msg);
+      return mv;
   }
 
- 
-  
-  @GetMapping("studentlogin")	
+  @GetMapping("/studentlogin")
   public ModelAndView studentLogin() {
-    ModelAndView mv = new ModelAndView();
-    mv.setViewName("studentlogin");
-    return mv;
+      return new ModelAndView("studentlogin");
   }
-  
-  @PostMapping("checkStudentLogin")
-  public ModelAndView checkStudentLogin(HttpServletRequest request) {
-    ModelAndView mv = new ModelAndView();
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-    
-    Student student = studentService.checkstudentlogin(email, password);
-    
-    if (student != null) {
-      mv.setViewName("student-dashboard");
-    } else {
-      mv.setViewName("studentloginfail");
-      mv.addObject("message", "Login Failed! Please try again.");
-    }
-    return mv;
+
+  @PostMapping("/checkStudentLogin")
+  public ModelAndView checkStudentLogin(HttpServletRequest request, HttpSession session) {
+      String email = request.getParameter("email");
+      String password = request.getParameter("password");
+
+      Student student = studentService.checkstudentlogin(email, password);
+
+      if (student != null) {
+          session.setAttribute("studentId", student.getId());
+          return new ModelAndView("redirect:/studenthome");
+      } else {
+          ModelAndView mv = new ModelAndView("studentloginfail");
+          mv.addObject("message", "Login Failed! Please try again.");
+          return mv;
+      }
   }
-  
-  @GetMapping("viewStudentDetails")
+
+  @GetMapping("/viewStudentDetails")
   public ModelAndView viewStudentDetails(HttpServletRequest request) {
-    ModelAndView mv = new ModelAndView("student-details");
-    String email = request.getParameter("email");
-    Student student = studentService.findByEmail(email);
-    if (student != null) {
-      mv.addObject("student", student);
-    } else {
-      mv.addObject("message", "No student found with the given email.");
-    }
-    return mv;
+      String email = request.getParameter("email");
+      Student student = studentService.findByEmail(email);
+      ModelAndView mv = new ModelAndView("student-details");
+      if (student != null) {
+          mv.addObject("student", student);
+      } else {
+          mv.addObject("message", "No student found with the given email.");
+      }
+      return mv;
   }
-  
-  @GetMapping("studentprofile")
-	public ModelAndView studentprofile()
-	{
-		ModelAndView mv=new ModelAndView();
-		mv.setViewName("studentprofile");
-		return mv;
-	}
-  @GetMapping("updateprofile")
-	public ModelAndView updateprofile()
-	{
-		ModelAndView mv=new ModelAndView("updateprofile");
-		return mv;
-	}
-  @PostMapping("update")
-	public ModelAndView update(HttpServletRequest request)
-	{
-		ModelAndView mv=new ModelAndView("");
-		
-		int id=Integer.parseInt(request.getParameter("sid"));
-		String name =request.getParameter("sname");
-		String gender = request.getParameter("sgender");
-		String dob = request.getParameter("sdob");
-		String location = request.getParameter("slocation");
-		String contact = request.getParameter("scontact");
-		String password = request.getParameter("spwd");
-		
-		Student student =new Student();
-		student.setId(id);
-		student.setName(name);
-		student.setGender(gender);
-		student.setDateOfBirth(dob);
-		
-		student.setContact(contact);
-		student.setPassword(password);
-		
-		studentService.updateStudent(student);
-		
-		//create new session variable for customer
-		//case1=update customer session variable by taking customer object from table
-		//case2=you logout after updating profile
-		
-		mv.setViewName("customerlogin");
-		
-		
-		return mv;
-	}
-  
-  
 
-  
+  @GetMapping("/studentProfile")
+  public ModelAndView showStudentProfile(HttpSession session) {
+      Integer studentId = (Integer) session.getAttribute("studentId");
+
+      if (studentId == null) {
+          return new ModelAndView("studentlogin").addObject("message", "Session expired. Please log in again.");
+      }
+
+      Student student = studentService.findStudentById(studentId);
+      if (student != null) {
+          return new ModelAndView("studentProfile").addObject("student", student);
+      } else {
+          return new ModelAndView("errorPage").addObject("errorMessage", "Student profile not found.");
+      }
+  }
+
+  @GetMapping("/updateprofile")
+  public ModelAndView showUpdateProfilePage(HttpSession session) {
+      Integer studentId = (Integer) session.getAttribute("studentId");
+
+      ModelAndView mv = new ModelAndView("updateprofile");
+      if (studentId != null) {
+          Student student = studentService.findStudentById(studentId);
+          mv.addObject("student", student);
+      } else {
+          mv.addObject("errorMessage", "Session expired. Please log in again.");
+      }
+      return mv;
+  }
+
+  @PostMapping("/update")
+  public ModelAndView updateStudentProfile(HttpServletRequest request, HttpSession session) {
+      Integer studentId = (Integer) session.getAttribute("studentId");
+
+      if (studentId == null) {
+          return new ModelAndView("studentlogin").addObject("message", "Session expired. Please log in again.");
+      }
+
+      // Retrieve form data
+      String name = request.getParameter("sname");
+      String gender = request.getParameter("sgender");
+      String dob = request.getParameter("sdob");
+      String email = request.getParameter("semail");
+      String contact = request.getParameter("scontact");
+      String password = request.getParameter("spwd");
+      String gradeLevel = request.getParameter("sgradelevel");
+
+      Student student = studentService.findStudentById(studentId);
+
+      if (student != null) {
+          student.setName(name);
+          student.setGender(gender);
+          student.setDateOfBirth(dob);
+          student.setEmail(email);
+          student.setContact(contact);
+          student.setPassword(password);
+          student.setGradeLevel(gradeLevel);
+
+          studentService.updateStudent(student);
+          return new ModelAndView("studentProfile").addObject("student", student)
+                  .addObject("message", "Profile updated successfully!");
+      } else {
+          return new ModelAndView("errorPage").addObject("errorMessage", "Student not found.");
+      }
+  }
 }
-

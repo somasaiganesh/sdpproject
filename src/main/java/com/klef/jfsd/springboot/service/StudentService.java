@@ -18,7 +18,9 @@ public Student getStudentByEmail(String email);
 public void updateStudent(Student student);
 public Student getStudentWithReports(int sid);
 public List<Student> getAllStudents();
-public Student getStudentById(Long studentId);
+public Student getStudentById(Object object);
 Student getStudentById(int id);
+public Student findStudentById(int id);
+Student getStudentById(Long studentId);
   
 }

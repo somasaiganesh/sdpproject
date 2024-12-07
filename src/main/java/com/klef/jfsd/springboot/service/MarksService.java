@@ -12,4 +12,6 @@ public interface MarksService {
 
 	public void saveMarks(Marks marks);
 
+	public List<Marks> getMarksByStudentId(int studentId);
+
 }

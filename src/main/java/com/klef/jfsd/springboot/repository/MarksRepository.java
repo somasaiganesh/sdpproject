@@ -1,4 +1,5 @@
 package com.klef.jfsd.springboot.repository;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,7 @@ import com.klef.jfsd.springboot.model.Student;
 
 @Repository
 public interface MarksRepository extends JpaRepository<Marks, Integer>{
+
+	List<Marks> findByStudentId(int studentId);
 
 }

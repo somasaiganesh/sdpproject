@@ -28,6 +28,10 @@ public class MarksServiceImpl implements MarksService{
 			// TODO Auto-generated method stub
 			
 		}
+		public List<Marks> getMarksByStudentId(int studentId) {
+		    return marksRepository.findByStudentId(studentId);
+		}
+
 
 
 }
